@@ -17,6 +17,7 @@
 		583CCE782719C377005C1B3A /* PresentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583CCE772719C377005C1B3A /* PresentViewController.swift */; };
 		583CCE7F2719ECE9005C1B3A /* TvShowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583CCE7E2719ECE9005C1B3A /* TvShowManager.swift */; };
 		583CCE812719ED46005C1B3A /* TvShow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583CCE802719ED46005C1B3A /* TvShow.swift */; };
+		58731BD327214AF000906FAB /* Alert+Extention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58731BD227214AF000906FAB /* Alert+Extention.swift */; };
 		58963ED5271D2B0600C56A57 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 58963ED4271D2B0600C56A57 /* Kingfisher */; };
 		58963ED8271D652F00C56A57 /* MainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58963ED6271D652F00C56A57 /* MainTableViewCell.swift */; };
 		58963ED9271D652F00C56A57 /* MainTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58963ED7271D652F00C56A57 /* MainTableViewCell.xib */; };
@@ -46,6 +47,7 @@
 		583CCE772719C377005C1B3A /* PresentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentViewController.swift; sourceTree = "<group>"; };
 		583CCE7E2719ECE9005C1B3A /* TvShowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TvShowManager.swift; sourceTree = "<group>"; };
 		583CCE802719ED46005C1B3A /* TvShow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TvShow.swift; sourceTree = "<group>"; };
+		58731BD227214AF000906FAB /* Alert+Extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alert+Extention.swift"; sourceTree = "<group>"; };
 		58963ED6271D652F00C56A57 /* MainTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTableViewCell.swift; sourceTree = "<group>"; };
 		58963ED7271D652F00C56A57 /* MainTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainTableViewCell.xib; sourceTree = "<group>"; };
 		58963EDB271D9B9C00C56A57 /* PresentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PresentTableViewCell.xib; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				583CCE802719ED46005C1B3A /* TvShow.swift */,
 				58C9C59F27205798003EBB13 /* TheaterLocation.swift */,
 				58C9C5A1272057A5003EBB13 /* TheaterLocationManager.swift */,
+				58731BD227214AF000906FAB /* Alert+Extention.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -229,6 +232,7 @@
 				58C9C59D271FFA4F003EBB13 /* BookCollectionViewCell.swift in Sources */,
 				58C9C5A027205798003EBB13 /* TheaterLocation.swift in Sources */,
 				58C9C5A4272059F8003EBB13 /* MovieViewController.swift in Sources */,
+				58731BD327214AF000906FAB /* Alert+Extention.swift in Sources */,
 				583CCE682719B11A005C1B3A /* MainViewController.swift in Sources */,
 				58A09C53271E885B0063CA71 /* WebViewController.swift in Sources */,
 				58C9C5A2272057A5003EBB13 /* TheaterLocationManager.swift in Sources */,
