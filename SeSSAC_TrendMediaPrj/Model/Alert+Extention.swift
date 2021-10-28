@@ -43,10 +43,7 @@ extension UIViewController {
         
         let ok = UIAlertAction(title: okTitle, style: .default) { _ in
             print("확인 버튼 눌렀음")
-            
-            
             okAction()
-        
         }
         
         alert.addAction(cancel)

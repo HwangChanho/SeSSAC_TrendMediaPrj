@@ -15,7 +15,7 @@ class WebViewController: UIViewController {
     @IBOutlet weak var presentWebView: WKWebView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var titleShow: String = ""
+    var movieId: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +23,8 @@ class WebViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "< BACK", style: .plain, target: self, action: #selector(closeButtonClicked(_:)))
         
         searchBar.delegate = self
+        
+        loadVideoData(movie_ID: movieId)
     }
     
     @objc func closeButtonClicked(_ sender: UIButton) {
@@ -51,6 +53,26 @@ class WebViewController: UIViewController {
             presentWebView.goForward()
         } else {
             print("Forward Error")
+        }
+    }
+    
+    func loadVideoData(movie_ID: Int) {
+        print(#function)
+        
+        TMDBAPIManager.shared.getMovieVideoDataURLDemo(movieId: movie_ID) { code, json in
+            switch code {
+            case 200:
+                let key = json["results"][0]["key"]
+                
+                guard let url = URL(string: "https://www.youtube.com/results?search_query=\(key)") else {
+                    print("ERROR")
+                    return
+                }
+                let request = URLRequest(url: url)
+                self.presentWebView.load(request)
+            default:
+                print(code)
+            }
         }
     }
 }

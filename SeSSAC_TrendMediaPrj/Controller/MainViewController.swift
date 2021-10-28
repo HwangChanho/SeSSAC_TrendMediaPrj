@@ -17,7 +17,12 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var bookButton: UIButton!
     
     static let identifier = "MainViewController"
-    let tvManager = TvShowManager()
+    
+    var totalResults = 0
+    var page = 1
+    var totalPages = 0
+    
+    var TMDBMovieArr: [TMDBMovie] = []
     
     var tvShowTitle: String?
     
@@ -26,6 +31,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         castTableView.delegate = self
         castTableView.dataSource = self
+        castTableView.prefetchDataSource = self
         
         let nibName = UINib(nibName: MainTableViewCell.identifier, bundle: nil)
         castTableView.register(nibName, forCellReuseIdentifier: MainTableViewCell.identifier)
@@ -37,6 +43,42 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "list.dash"), style: .plain, target: self, action: #selector(menuButtonClicked(_:)))
         
         setup()
+        fetchTMDBData()
+    }
+    
+    func fetchTMDBData() {
+        print(#function)
+        
+        TMDBAPIManager.shared.getMovieDataDemo(page: self.page, mediaOpt: "movie", term: "day") { code, json in
+            print(code)
+            switch code {
+            case 200:
+                self.totalResults = json["total_results"].intValue
+                self.page = json["page"].intValue
+                self.totalPages = json["total_pages"].intValue
+                
+                for item in json["results"].arrayValue {
+                    
+                    let poster_path = item["poster_path"].stringValue
+                    let video = item["video"].boolValue
+                    let media_type = item["media_type"].stringValue
+                    let backdrop_path = item["backdrop_path"].stringValue
+                    let overview = item["overview"].stringValue
+                    let title = item["title"].stringValue
+                    let release_date = item["release_date"].stringValue
+                    let original_language = item["original_language"].stringValue
+                    let movieId = item["id"].intValue
+                    
+                    let data = TMDBMovie(posterPath: poster_path, video: video, type: media_type, backdropPath: backdrop_path, overview: overview, title: title, releaseDate: release_date, language: original_language, movieId: movieId)
+                    
+                    self.TMDBMovieArr.append(data)
+                    
+                    self.castTableView.reloadData()
+                }
+            default:
+                print(code)
+            }
+        }
     }
     
     func setup() {
@@ -102,27 +144,30 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // 셀의 갯수: numberOfRowsInSection
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tvManager.tvShow.count
+        return TMDBMovieArr.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) ->
     UITableViewCell {
-        let row = tvManager.tvShow[indexPath.row]
+        let row = TMDBMovieArr[indexPath.row]
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MainTableViewCell.identifier, for: indexPath) as? MainTableViewCell else { return UITableViewCell() }
-        
-        let url = URL(string: row.backdropImage)
         
         cell.titleLabel.text = row.title
         cell.titleLabel.font = .boldSystemFont(ofSize: 20)
         
-        cell.mainImageView.kf.setImage(with: url)
+        if let url = URL(string: "\(Endpoint.tmdbImageURL)w300\(row.backdropPath)") {
+            cell.mainImageView.kf.setImage(with: url)
+        } else {
+            cell.mainImageView.image = UIImage(systemName: "star")
+        }
+        
         cell.mainImageView.contentMode = .scaleToFill
         
-        cell.krTitleLabel.text = "한국어"
+        cell.krTitleLabel.text = row.language
         cell.krTitleLabel.font = .boldSystemFont(ofSize: 20)
         
-        cell.dateLabel.text = tvManager.dateFormats(date: row.releaseDate)
+        cell.dateLabel.text = row.releaseDate
         cell.dateLabel.font = .systemFont(ofSize: 15)
         cell.dateLabel.textColor = .lightGray
         
@@ -151,7 +196,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // sell clicked action
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let row = tvManager.tvShow[indexPath.row]
+        let row = TMDBMovieArr[indexPath.row]
         
         // 1. 스토리보드 특정
         let storyBoard = UIStoryboard(name: "Main", bundle: nil)
@@ -161,7 +206,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         let vc = storyBoard.instantiateViewController(withIdentifier: PushViewController.identifier) as! PushViewController // 강제해제 연산자를 통해 매칭
 
         //Pass Data2. 표현
-        vc.TvShow = row
+        vc.tmdbMovie = row
         
         // Push: 스토리보드에서 네비게이션 컨트롤러가 임베드 되어 있는 지 확인!
         self.navigationController?.pushViewController(vc, animated: true)
@@ -175,7 +220,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         let vc = storyBoard.instantiateViewController(withIdentifier: WebViewController.identifier) as! WebViewController
         // 강제해제 연산자를 통해 매칭
         
-        vc.titleShow = tvManager.tvShow[sender.tag].title
+        vc.movieId = TMDBMovieArr[sender.tag].movieId
         
         // 2-1. 네비게이션 컨트롤러 임베드
         // let nav = UINavigationController(rootViewController: vc)
@@ -187,6 +232,28 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         // 3. present
         // present(nav, animated: true, completion: nil)
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+}
+
+extension MainViewController: UITableViewDataSourcePrefetching {
+    
+    // 셀이 화면에 보이기 전에 필요한 리소스를 미리 다운 받는 기능
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            if TMDBMovieArr.count - 1 == indexPath.row {
+                page += 1
+                fetchTMDBData()
+                print("indexPath: \(indexPath)")
+                // 서버에 요청
+            } else if page == totalPages {
+                print("end")
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        print("취소 : \(indexPaths)")
     }
     
 }
